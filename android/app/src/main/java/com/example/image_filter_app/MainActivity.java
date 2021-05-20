@@ -40,7 +40,7 @@ public class MainActivity extends FlutterActivity {
                         Log.d("hhh", " Bit map Imag ------- "+bitmap);
                         if (bitmap != null){
 
-                             result.success(image);
+                           //  result.success(image);
                         }
                     }
                     catch (IOException e){

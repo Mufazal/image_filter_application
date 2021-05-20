@@ -10,15 +10,14 @@ class ImageResolutionPage extends StatefulWidget {
 }
 
 class _ImageResolutionPageState extends State<ImageResolutionPage> {
-  int _counter = 0;
   static const platform = const MethodChannel("image.editing_app/dev");
   File selectedImage;
   File modifiedImage;
   ImagePicker _imagePicker = ImagePicker();
 
-  invokeMethodChannel() async {
+  invokeMethodChannel(File image) async {
     final result = await platform.invokeMethod(
-        'getModifiedImage', {"image": selectedImage}).catchError((e) {
+        'getModifiedImage', {"image": image.path}).catchError((e) {
       print("Platform error ");
       print("Platform error ");
     });
@@ -58,7 +57,9 @@ class _ImageResolutionPageState extends State<ImageResolutionPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               selectedImage == null
-                  ? Container()
+                  ? Container(
+                      child: Text("Image is not selected"),
+                    )
                   : Container(
                       height: height * 0.3, child: Image.file(selectedImage)),
               SizedBox(
@@ -66,7 +67,7 @@ class _ImageResolutionPageState extends State<ImageResolutionPage> {
               ),
               modifiedImage == null
                   ? Container(
-                      child: Text("Image is not selected"),
+                      child: Text("Image is not modified"),
                     )
                   : Container(
                       height: height * 0.3, child: Image.file(selectedImage)),
@@ -85,11 +86,21 @@ class _ImageResolutionPageState extends State<ImageResolutionPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: invokeMethodChannel,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: selectedImage == null
+          ? FloatingActionButton(
+              onPressed: () {
+                getImage();
+              },
+              tooltip: 'Increment',
+              child: Icon(Icons.photo),
+            )
+          : FloatingActionButton(
+              onPressed: () {
+                invokeMethodChannel(selectedImage);
+              },
+              tooltip: 'DECREMENT',
+              child: Icon(Icons.check),
+            ),
     );
   }
 }
